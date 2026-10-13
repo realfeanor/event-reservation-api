@@ -1,0 +1,59 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: windows-latest
+    timeout-minutes: 20
+    env:
+      LUCKYPENNY_LICENSE_KEY: ${{ secrets.LUCKYPENNY_LICENSE_KEY }}
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up .NET 8
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore local tools
+        run: dotnet tool restore
+
+      - name: Restore projects
+        shell: pwsh
+        run: |
+          dotnet restore WebAPI/WebAPI/WebAPI.csproj
+          dotnet restore WebAPI/Domain.UnitTests/Domain.UnitTests.csproj
+          dotnet restore WebAPI/Application.UnitTests/Application.UnitTests.csproj
+          dotnet restore WebAPI/IntegrationTests/IntegrationTests.csproj
+          dotnet restore WebAPI/ArchitectureTests/ArchitectureTests.csproj
+
+      - name: Build API
+        run: dotnet build WebAPI/WebAPI/WebAPI.csproj --configuration Release --no-restore
+
+      - name: Verify formatting
+        run: dotnet format whitespace WebAPI/WebAPI/WebAPI.csproj --verify-no-changes --no-restore
+
+      - name: Verify EF Core model
+        run: dotnet ef migrations has-pending-model-changes --project WebAPI/Persistence/Persistence.csproj --startup-project WebAPI/WebAPI/WebAPI.csproj --configuration Release --no-build
+
+      - name: Run domain tests
+        run: dotnet test WebAPI/Domain.UnitTests/Domain.UnitTests.csproj --configuration Release --no-restore
+
+      - name: Run application tests
+        run: dotnet test WebAPI/Application.UnitTests/Application.UnitTests.csproj --configuration Release --no-restore
+
+      - name: Run integration tests
+        run: dotnet test WebAPI/IntegrationTests/IntegrationTests.csproj --configuration Release --no-restore
+
+      - name: Run architecture tests
+        run: dotnet test WebAPI/ArchitectureTests/ArchitectureTests.csproj --configuration Release --no-restore

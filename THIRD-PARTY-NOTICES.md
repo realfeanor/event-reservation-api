@@ -19,8 +19,10 @@ repositories:
   — MIT License.
 
 The copyright and license notices in those upstream repositories continue to
-apply to material derived from them. This notice is attribution, not a claim
-that every file in this portfolio is copied from those repositories.
+apply to material derived from them. A local copy is included at
+[`LICENSES/nArchitecture-MIT.txt`](LICENSES/nArchitecture-MIT.txt). This notice
+is attribution, not a claim that every file in this portfolio is copied from
+those repositories.
 
 ## Inherited Foundation
 
