@@ -8,8 +8,9 @@ public static class ApplicationBuilderDbMigrationApplierExtensions
 {
     public static IApplicationBuilder UseDbMigrationApplier(this IApplicationBuilder app)
     {
+        using IServiceScope scope = app.ApplicationServices.CreateScope();
         IEnumerable<IDbMigrationApplierService> migrationCreatorServices =
-            app.ApplicationServices.GetServices<IDbMigrationApplierService>();
+            scope.ServiceProvider.GetServices<IDbMigrationApplierService>();
         foreach (IDbMigrationApplierService service in migrationCreatorServices)
             service.Initialize();
 
