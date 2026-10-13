@@ -1,0 +1,46 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="8.0.31">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Caching.StackExchangeRedis" Version="8.0.25" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.7.3" />
+    <PackageReference Include="System.Text.Json" Version="8.0.6" />
+    <PackageReference Include="YamlDotNet" Version="16.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Application\Application.csproj" />
+    <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
+    <ProjectReference Include="..\Persistence\Persistence.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\CorePackages\Core.Application\Core.Application.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.CrossCuttingConcerns.Exception.WebApi\Core.CrossCuttingConcerns.Exception.WebApi.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.CrossCuttingConcerns.Logging\Core.CrossCuttingConcerns.Logging.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.ElasticSearch\Core.ElasticSearch.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.Localization.WebApi\Core.Localization.WebApi.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.Mailing\Core.Mailing.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.Persistence.WebApi\Core.Persistence.WebApi.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.Security\Core.Security.csproj" />
+    <ProjectReference Include="..\..\CorePackages\Core.Security.WebApi.Swagger\Core.Security.WebApi.Swagger.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="..\Application\Features\**\*.yaml"
+             Link="Features\%(RecursiveDir)%(Filename)%(Extension)">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

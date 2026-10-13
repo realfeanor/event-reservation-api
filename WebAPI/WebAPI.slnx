@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="Application/Application.csproj" />
+  <Project Path="Application.UnitTests/Application.UnitTests.csproj" />
+  <Project Path="ArchitectureTests/ArchitectureTests.csproj" />
+  <Project Path="Domain/Domain.csproj" />
+  <Project Path="Domain.UnitTests/Domain.UnitTests.csproj" />
+  <Project Path="Infrastructure/Infrastructure.csproj" />
+  <Project Path="IntegrationTests/IntegrationTests.csproj" />
+  <Project Path="Persistence/Persistence.csproj" />
+  <Project Path="WebAPI/WebAPI.csproj" />
+</Solution>

@@ -1,0 +1,6 @@
+namespace Application.Services.Time;
+
+public interface IClock
+{
+    DateTimeOffset UtcNow { get; }
+}

@@ -1,0 +1,45 @@
+using MediatR;
+using Microsoft.AspNetCore.Http;
+using Microsoft.IdentityModel.Tokens;
+using Core.CrossCuttingConcerns.Exception.Types;
+using Core.Security.Constants;
+using Core.Security.Extensions;
+
+namespace Core.Application.Pipelines.Authorization;
+
+public class AuthorizationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+    where TRequest : IRequest<TResponse>, ISecuredRequest
+{
+    private readonly IHttpContextAccessor _httpContextAccessor;
+
+    public AuthorizationBehavior(IHttpContextAccessor httpContextAccessor)
+    {
+        _httpContextAccessor = httpContextAccessor;
+    }
+
+    public async Task<TResponse> Handle(
+        TRequest request,
+        RequestHandlerDelegate<TResponse> next,
+        CancellationToken cancellationToken
+    )
+    {
+        var user = _httpContextAccessor.HttpContext?.User;
+        if (user?.Claims.Any() != true)
+            throw new AuthorizationException("You are not authenticated.");
+
+        if (request.Roles.Any())
+        {
+            ICollection<string> userRoleClaims = user.GetRoleClaims() ?? [];
+            bool isNotMatchedAUserRoleClaimWithRequestRoles = userRoleClaims
+                .FirstOrDefault(userRoleClaim =>
+                    userRoleClaim == GeneralOperationClaims.Admin || request.Roles.Contains(userRoleClaim)
+                )
+                == null;
+            if (isNotMatchedAUserRoleClaimWithRequestRoles)
+                throw new AuthorizationException("You are not authorized.");
+        }
+
+        TResponse response = await next();
+        return response;
+    }
+}
