@@ -9,7 +9,7 @@
 **/[Rr]elease/
 
 **/[Aa]rtifacts/
-**/[Pp]ublish/
+/[Pp]ublish/
 
 ############################################################
 # VISUAL STUDIO
