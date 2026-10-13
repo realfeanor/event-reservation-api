@@ -1,11 +1,13 @@
 # Event Reservation API
 
-An educational backend project for managing events, venue sessions, temporary
-seat holds, and confirmed reservations.
+[![CI](https://github.com/realfeanor/event-reservation-api/actions/workflows/ci.yml/badge.svg)](https://github.com/realfeanor/event-reservation-api/actions/workflows/ci.yml)
 
-The project is being developed as a backend-focused portfolio project. Its main
-goal is to demonstrate domain-driven design, Clean Architecture, CQRS, reliable
-business workflows, concurrency control, and automated testing in .NET 8.
+A backend portfolio project for managing events, venue sessions, temporary seat
+holds, and confirmed reservations.
+
+The project demonstrates domain-driven design, Clean Architecture, CQRS,
+reliable business workflows, concurrency control, and automated testing in
+.NET 8.
 
 > **Project status:** The complete first reservation workflow and portfolio
 > hardening milestone are implemented.
@@ -25,7 +27,7 @@ existing Docker/AWS project. It focuses on backend design problems such as:
 - keeping domain rules independent from HTTP and persistence concerns;
 - testing business behavior at domain, application, and API levels.
 
-## Planned First Workflow
+## Core Reservation Workflow
 
 ```text
 Administrator creates a venue and its seats
