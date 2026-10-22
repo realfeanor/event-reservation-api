@@ -28,6 +28,37 @@ public class SeatHoldEndpointTests
     }
 
     [Fact]
+    public async Task HoldSeats_WithDuplicateSeatIds_ShouldReturnFieldLevelValidationErrors()
+    {
+        await using CustomWebApplicationFactory factory = new();
+        using HttpClient client = CreateClient(factory);
+        Guid sessionId = await CreateOpenSessionWithThreeSeats(factory, client);
+        Guid seatId = (await GetSeatIds(client, sessionId))[0];
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue(
+            "Bearer",
+            await TestAuthentication.CreateCustomerAccessToken(client)
+        );
+
+        HttpResponseMessage response = await client.PostAsJsonAsync(
+            $"/api/Sessions/{sessionId}/seat-holds",
+            new { sessionSeatIds = new[] { seatId, seatId } }
+        );
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Equal("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        string responseContent = await response.Content.ReadAsStringAsync();
+        using JsonDocument body = JsonDocument.Parse(responseContent);
+        Assert.Equal("Validation error(s)", body.RootElement.GetProperty("title").GetString());
+        Assert.True(body.RootElement.TryGetProperty("errors", out JsonElement errors), responseContent);
+        JsonElement error = Assert.Single(errors.EnumerateArray());
+        Assert.Equal("SessionSeatIds", error.GetProperty("property").GetString());
+        Assert.Contains(
+            "A seat can only be selected once.",
+            error.GetProperty("errors").EnumerateArray().Select(message => message.GetString())
+        );
+    }
+
+    [Fact]
     public async Task CompetingRequests_ShouldAllowExactlyOneAtomicMultiSeatHold()
     {
         await using CustomWebApplicationFactory factory = new();
